@@ -59,9 +59,11 @@ for p in tqdm(range(runs)):
         qc.ccx(weights[0], weights[1], readout)
         qc.barrier()
 
+        qc.x(label)
         for q in [0, 1, 2, 3]:
                 qc.h(q)
-        qc.x(label)
+        
+
         for q in [0, 1, 2, 3, 4]:
                 qc.x(q)
         qc.barrier()
@@ -71,12 +73,14 @@ for p in tqdm(range(runs)):
         qc.barrier()
         for q in [0, 1, 2, 3, 4]:
                 qc.x(q)
-        qc.x(label)
+                
         for q in [0, 1, 2, 3]:
                 qc.h(q)
+        qc.x(label)
+        
     if p == 6:
        mpl = qc.draw(output='mpl')
-       mpl.savefig('qc_allright_v2.jpg')
+       mpl.savefig('qc_allright_v2_plus.jpg')
 
     qc.measure([weights[0], weights[1]], [weights[0], weights[1]])
 
@@ -94,7 +98,7 @@ plt.plot(record)
 plt.ylabel('best weight appear times') 
 plt.xlabel('grover_iterations') 
 plt.title("allright_result_v2")
-plt.savefig('allright_result_v2.jpg')
+plt.savefig('allright_result_v2_plus.jpg')
 index = []
 for i in range(len(record)):
     if record[i] >= 360:
