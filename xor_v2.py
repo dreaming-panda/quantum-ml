@@ -64,7 +64,7 @@ for p in tqdm(range(runs)):
     # qc.ccx(weights[0], features[0], readout)
     # qc.ccx(weights[1], features[1], readout)
     # qc.barrier()
-
+    
     for _ in range(p):
             """
             oracle
@@ -90,26 +90,6 @@ for p in tqdm(range(runs)):
             """
             diffusion
             """
-            for q in [0, 1, 2, 3]:
-                qc.h(q)
-            qc.barrier()
-            qc.x(label)
-            qc.ccx(features[0], features[1], label)
-            qc.x(features[0])
-            qc.x(features[1])
-            qc.ccx(features[0], features[1], label)
-            qc.x(features[0])
-            qc.x(features[1])
-            qc.barrier()
-            for q in [0, 1, 2, 3, 4]:   
-                qc.x(q)
-            qc.barrier()
-            qc.h(weights[0])
-            qc.mct([1, 2, 3, 4], 0)
-            qc.h(weights[0])
-            qc.barrier()
-            for q in [0, 1, 2, 3, 4]:
-                qc.x(q)
             qc.x(features[1])
             qc.x(features[0])
             qc.ccx(features[0], features[1], label)
@@ -120,9 +100,33 @@ for p in tqdm(range(runs)):
             qc.barrier()
             for q in [0, 1, 2, 3]:   
                 qc.h(q)
+            
+
+            qc.barrier()
+            for q in [0, 1, 2, 3, 4]:   
+                qc.x(q)
+            qc.barrier()
+            qc.h(weights[0])
+            qc.mct([1, 2, 3, 4], 0)
+            qc.h(weights[0])
+            qc.barrier()
+            for q in [0, 1, 2, 3, 4]:
+                qc.x(q)
+            qc.barrier()
+
+            for q in [0, 1, 2, 3]:
+                qc.h(q)
+            qc.barrier()
+            qc.x(label)
+            qc.ccx(features[0], features[1], label)
+            qc.x(features[0])
+            qc.x(features[1])
+            qc.ccx(features[0], features[1], label)
+            qc.x(features[0])
+            qc.x(features[1])
     if p == 6:
        mpl = qc.draw(output='mpl')
-       mpl.savefig('qc_xor_v2.jpg'.format(p))
+       mpl.savefig('qc_xor_v2_plus.jpg'.format(p))
     qc.measure([weights[0], weights[1]], [weights[0], weights[1]])
     
 
@@ -136,6 +140,8 @@ for p in tqdm(range(runs)):
     results = aer_sim.run(qobj).result()
     counts = results.get_counts()
         #print(counts)
+    if '000011' not in counts.keys():
+            counts['000011'] = 0
     record.append(counts['000011'])
 
 plt.figure(figsize=(12, 12))  
@@ -143,10 +149,10 @@ plt.plot(record)
 plt.ylabel('best weight appear times') 
 plt.xlabel('grover_iterations') 
 plt.title("xor_result_v2")
-plt.savefig('xor_result_v2.jpg')
+plt.savefig('xor_result_v2_plus.jpg')
 index = []
 for i in range(len(record)):
-    if record[i] >= 280:
+    if record[i] >= 360:
             index.append(i)   
 record.sort(reverse=True)
 print(record)
