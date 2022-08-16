@@ -62,10 +62,13 @@ for p in tqdm(range(runs)):
         qc.ccx(weights[1], features[1], readout)
         qc.ccx(weights[0], features[0], readout)
         qc.barrier()
+
+        qc.ccx(features[0], features[1], label)
+        qc.x(label)
         for q in [0, 1, 2, 3]:
                 qc.h(q)
-        qc.x(label)
-        qc.ccx(features[0], features[1], label)
+        
+
         for q in [0, 1, 2, 3, 4]:
                 qc.x(q)
         qc.barrier()
@@ -75,13 +78,14 @@ for p in tqdm(range(runs)):
         qc.barrier()
         for q in [0, 1, 2, 3, 4]:
                 qc.x(q)
-        qc.ccx(features[0], features[1], label)
-        qc.x(label)
+        
         for q in [0, 1, 2, 3]:
                 qc.h(q)
+        qc.x(label)
+        qc.ccx(features[0], features[1], label)
     if p == 6:
         mpl = qc.draw(output='mpl')
-        mpl.savefig('qc_notand_v2.jpg')
+        mpl.savefig('qc_notand_v2_plus.jpg')
 
     qc.measure([weights[0], weights[1]], [weights[0], weights[1]])
 
@@ -93,6 +97,8 @@ for p in tqdm(range(runs)):
     results = aer_sim.run(qobj).result()
     counts = results.get_counts()
     #print(counts)
+    if '000011' not in counts.keys():
+            counts['000011'] = 0
     record.append(counts['000011'])
 
 plt.figure(figsize=(12, 12))  
@@ -100,7 +106,7 @@ plt.plot(record)
 plt.ylabel('best weight appear times') 
 plt.xlabel('grover_iterations') 
 plt.title("notand_result_v2")
-plt.savefig('notand_result_v2.jpg')
+plt.savefig('notand_result_v2_plus.jpg')
 index = []
 for i in range(len(record)):
     if record[i] >= 360:
