@@ -114,6 +114,10 @@ for p in tqdm(range(runs)):
                 qc.barrier()
 
 
+                qc.z(weights[0])
+                qc.x(weights[0])
+                qc.z(weights[0])
+                qc.x(weights[0])
 
                 qc.barrier()
                 for q in [0, 1, 2, 3, 4, 6, 7, 8]:   
