@@ -133,6 +133,11 @@ for p in tqdm(range(runs)):
                 for q in weights:
                     qc.h(q)
                 qc.barrier()
+                
+                qc.z(weights[0])
+                qc.x(weights[0])
+                qc.z(weights[0])
+                qc.x(weights[0])
 
 
 
