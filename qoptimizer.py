@@ -1,13 +1,3 @@
-from ast import Assert
-from cProfile import label
-from distutils.command.build import build
-from ntpath import join
-from random import shuffle
-from tkinter.ttk import LabeledScale
-from config import QuantumConfig
-from data import QuantumDataSet
-from model import QuantumModel
-from optimizer import GroverOptimizer, QuantumOptimizer
 from qiskit import QuantumCircuit
 import torch
 import numpy as np
@@ -17,12 +7,12 @@ from qram import QRAMDataSet
 from qmodel import QModel
 from qiskit.circuit.library import Diagonal
 class QOptimizer:
-    def __init__(self, qc : QuantumCircuit, mark, label, output, data : QRAMDataSet, model : QModel, allqubits : list) -> None:
+    def __init__(self, qc : QuantumCircuit, dataset_qubits:list, output, data : QRAMDataSet, model : QModel, allqubits : list) -> None:
         self.qc = qc
         self.data = data
         self.model = model
-        self.mark = mark
-        self.label = label
+        self.mark = dataset_qubits[-1]
+        self.label = dataset_qubits[-2]
         self.output = output
         self.oracle_matrix = torch.zeros((8, 8))
         self.diffusion_diagonal = []
@@ -62,19 +52,6 @@ class QOptimizer:
         
     
 if __name__ == '__main__':
-        qc = QuantumCircuit(2, 2)
-        diagonal = [-1, 1, 1, 1]
-        op = Diagonal(diagonal)
-        qc.append(op,[0, 1])
-        qc.measure_all()
-        mpl = qc.draw('mpl')
-        mpl.savefig('Diagonal.jpg')        
-        aer_sim = Aer.get_backend('statevector_simulator')
-        transpiled_grover_circuit = transpile(qc, aer_sim)
-        qobj = assemble(transpiled_grover_circuit)
-        results = aer_sim.run(qobj).result()
-        counts = results.get_statevector()
-        print(counts)
-
+        pass
     
         
