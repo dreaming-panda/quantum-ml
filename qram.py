@@ -27,6 +27,8 @@ class QueenDataset(QRAMDataSet):
         super().__init__(address_qubits=address_qubits,dataset_qubits=dataset_qubits,qc=qc)
         self.data = torch.load('./queen_dataset/queen_full.pt')
         self.label = torch.load('./queen_dataset/queen_labels_full.pt')
+        print(self.label)
+        print(self.label.sum())
         self.bitstring = []
         self.matrix = torch.zeros((self.data.shape[0] * 4, self.data.shape[0]*4)).long()
         self.inverse_matrix = torch.zeros((self.data.shape[0] * 4, self.data.shape[0]*4)).long()
@@ -35,7 +37,6 @@ class QueenDataset(QRAMDataSet):
         self.inverse_operator = None
         self.build_bitstring()
         self.build_operator()
-        print(self.bitstring)
     def build_bitstring(self):
         for i in range(self.data.shape[0]):
             sample = self.data[i]
@@ -81,7 +82,6 @@ class RowPatternDataset(QRAMDataSet):
         self.inverse_operator = None
         self.build_bitstring()
         self.build_operator()
-        print(self.bitstring)
     def build_bitstring(self):
         for i in range(self.data.shape[0]):
             sample = self.data[i]
@@ -121,6 +121,7 @@ if __name__ == '__main__':
     address_qubits = list(range(9))
     qram = QueenDataset(address_qubits=address_qubits,dataset_qubits=dataset_qubits, qc=qc, train=train)
     qram.encode()
+    qram.decode()
     qc.measure_all()
     mpl = qc.draw('mpl')
     mpl.savefig('Queen.jpg')
