@@ -126,7 +126,6 @@ if __name__ == '__main__':
     mpl = qc.draw('mpl')
     mpl.savefig('Queen.jpg')
     aer_sim = Aer.get_backend('aer_simulator')
-    #aer_sim.set_options(device='GPU')
     transpiled_grover_circuit = transpile(qc, aer_sim)
     qobj = assemble(transpiled_grover_circuit)
     results = aer_sim.run(qobj).result()
