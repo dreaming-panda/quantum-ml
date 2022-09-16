@@ -30,9 +30,9 @@ class QOptimizer:
         self.oracle_matrix[6][6] = 1
         self.oracle_matrix[7][7] = -1
         self.oracle_op = Operator(self.oracle_matrix.numpy())
-        self.diffusion_diagonal = [-1 for _ in range(int(2**len(self.allqubits)))]
-        self.diffusion_diagonal[0] = 1
-        self.diffusion_op = Diagonal(self.diffusion_diagonal)
+        # self.diffusion_diagonal = [-1 for _ in range(int(2**len(self.allqubits)))]
+        # self.diffusion_diagonal[0] = 1
+        # self.diffusion_op = Diagonal(self.diffusion_diagonal)
     def oracle(self):
         self.qc.barrier()
         self.qc.unitary(self.oracle_op, [self.mark, self.label, self.output],label='oracle')

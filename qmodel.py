@@ -172,6 +172,48 @@ class RowdetectModelB(QModel):
         for x in self.weights:
             self.qc.h(x)
         self.qc.barrier()
+class MNISTMODEL(QModel):
+    def forward(self):
+        for x in self.weights:
+            self.qc.h(x)
+        self.qc.barrier()
+        for i in range(9):
+            self.qc.mcx(control_qubits=[self.weights[i], self.features[i]], target_qubit=self.ancilla_bits[i])
+        self.qc.barrier()
+        for i in range(9):
+            self.qc.x(self.ancilla_bits[i])
+        self.qc.x(self.output)
+        self.qc.barrier()
+        self.qc.mcx(control_qubits=self.ancilla_bits, target_qubit=self.output)
+        self.qc.barrier()
+        for i in range(9):
+            self.qc.x(self.ancilla_bits[i])
+        self.qc.barrier()
+        self.qc.cx(control_qubit=self.weights[9],target_qubit=self.output)
+        self.qc.barrier()
+    def de_forward(self):
+        self.qc.barrier()
+        self.qc.cx(control_qubit=self.weights[9],target_qubit=self.output)
+        self.qc.barrier()
+        for i in range(9):
+            self.qc.x(self.ancilla_bits[i])
+        self.qc.barrier()
+        self.qc.mcx(control_qubits=self.ancilla_bits, target_qubit=self.output)
+        self.qc.barrier()
+        for i in range(9):
+            self.qc.x(self.ancilla_bits[i])
+        self.qc.x(self.output)
+        self.qc.barrier()
+        for i in range(9):
+            self.qc.mcx(control_qubits=[self.weights[i], self.features[i]], target_qubit=self.ancilla_bits[i])
+        self.qc.barrier()
+        for x in self.weights:
+            self.qc.h(x)
+        self.qc.barrier()
+        
+
+
+        
         
 
     
