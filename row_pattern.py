@@ -1,11 +1,13 @@
+from turtle import title
 from qram import QRAMDataSet, RowPatternDataset
 from qmodel import QModel, RowdetectModel, RowdetectModelA, RowdetectModelB
 from qoptimizer import QOptimizer
 from qiskit import QuantumCircuit
 import matplotlib.pyplot as plt
 import torch
-from qiskit.visualization import plot_histogram
+from qiskit.visualization import plot_histogram,plot_state_city
 from qiskit import IBMQ, Aer, assemble, transpile, execute
+import time
 def Optimize():
     weights_bits = [0]
     address_bits = list(range(1, 10))
@@ -50,7 +52,7 @@ def Optimize_A():
     print(counts)
     fig = plot_histogram(counts)
     fig.savefig("row_pattern_A.jpg")
-def Optimize_B():
+def Optimize_B(iter):
     weights_bits = [0, 1, 2]
     address_bits = list(range(3, 12))
     dataset_bits = list(range(3, 14))
@@ -64,12 +66,15 @@ def Optimize_B():
     optimizer = QOptimizer(qc=qc,dataset_qubits=dataset_bits,output=output,data=row_pattern_dataset,model=row_pattern_model,allqubits=allqubits)
     row_pattern_dataset.encode()
     row_pattern_model.forward()
-    optimizer.optimize(iter=1)
-    qc.cx(dataset_bits[-2], output)
-    qc.measure(output, 0)
+    optimizer.optimize(iter=iter)
+    qc.measure(weights_bits, weights_bits)
     aer_sim = Aer.get_backend('aer_simulator')
-    job = execute(qc, aer_sim, shots=1000000)
+    aer_sim.set_options(precision='single')
+    transpiled_qc = transpile(qc, aer_sim)
+    job = execute(transpiled_qc, aer_sim, shots=1000000)
     counts = job.result().get_counts()
     print(counts)
-    
-Optimize_B()
+
+start = time.time()  
+Optimize_B(6)
+print(time.time() - start)

@@ -41,7 +41,13 @@ class QOptimizer:
         self.qc.barrier()
         self.model.de_forward()
         self.data.decode()
-        self.qc.append(self.diffusion_op, self.allqubits)
+        for q in self.allqubits:
+            self.qc.x(q)
+        self.qc.h(self.allqubits[0])
+        self.qc.mcx(control_qubits=self.allqubits[1:], target_qubit=self.allqubits[0])
+        self.qc.h(self.allqubits[0])
+        for q in self.allqubits:
+            self.qc.x(q)
         self.data.encode()
         self.model.forward()
         self.qc.barrier()
